@@ -1,0 +1,102 @@
+﻿@model Hotel2.VievModel.RoomVievModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadRoomZapłacony();
+
+        $("#btnSave").click(function () {
+            if (!$("#costumerBooking").valid()) {
+                return;
+            }
+
+        });
+        LoadRoomZapłacony();
+
+    });
+
+    function LoadRoomZapłacony() {
+
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Historia/GetRoomZapłacony',
+            success: function (data) {
+                $("#divLoadRoomZapłacony").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+    function Zapłać2(bookingid) {//zmian z active true na false
+        var result = confirm("Czy chcesz zapłacić?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { bookingid: bookingid },
+            url: '/Historia/Zapłać',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRoomZapłacony();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //function SprzątajPokój(roomid) {//zmian z active true na false
+    //    var result = confirm("Czy chcesz posprzątać pokój?");
+    //    if (result === false) {
+    //        return false;
+    //    }
+    //    $.ajax({
+    //        async: true,
+    //        type: 'Get',
+    //        dataType: 'JSON',
+    //        contentType: 'application/json; charset=utf-8',
+    //        data: { roomid: roomid },
+    //        url: '/EkipaSprzątająca/SprzątajPokój',
+    //        success: function (data) {
+    //            if (data.success === true) {
+    //                alert(data.message);
+
+    //                LoadRoomBrudny();
+    //            }
+
+    //        },
+    //        error: function () {
+    //            alert('error');
+    //        }
+    //    });
+    //}
+</script>
+
+
+<div style="margin-top: 20px"></div>
+
+<div id="divLoadRoomZapłacony">
+
+</div>
+
+<div style="margin-top: 20px"></div>
+
+<div id="divLoadRoomNieZapłacony">
+
+</div>

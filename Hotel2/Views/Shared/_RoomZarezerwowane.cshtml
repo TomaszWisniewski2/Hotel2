@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomRezerwacjeViewModel>
+@* tabela zarezerwowanych pokoi - accept anuluj *@
+<head>
+    <style>
+        table, th, td {
+            margin: 20px;
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 15px;
+        }
+
+        td {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<table style="width: 100% ">
+    
+    <thead style="background-color: powderblue;">
+
+        <tr>
+
+
+            <th>
+                Room Nr
+            </th>
+            <th>
+                Imie
+            </th>
+            <th>
+                Nazwisko
+            </th>
+            <th>
+                Stan
+            </th>
+            <th>
+                Ilość osób
+            </th>
+            <th>
+                Wielkość
+            </th>
+            <th>
+                Od
+            </th>
+            <th>
+                Do
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if ((@item.BookingStatus == "Zarezerwowany")&&(@item.BookingTo > DateTime.UtcNow))
+            {
+
+
+
+                <tr>
+
+
+                    <td>
+                        @item.RoomNumber
+                    </td>
+                    <td>
+                        @item.CustomerName
+                    </td>
+                    <td>
+                        @item.CustomerAddres
+                    </td>
+                    <td>
+                        @item.BookingStatus
+                    </td>
+                    <td>
+                        @item.NoOfMembers
+                    </td>
+                    <td>
+                        @item.RoomCapacity
+                    </td>
+                    <td>
+                        @item.BookingFrom.ToString("dd-MMM-yyyy")
+                    </td>
+                    <td>
+                        @item.BookingTo.ToString("dd-MMM-yyyy")
+                    </td>
+                    <td>
+                        
+                        <span id="btnAccept" class="glyphicon glyphicon-ok" onclick="ZajmijPokój(@item.Roomid)"></span>&nbsp;&nbsp;
+                        <span id="btnAnuluj" class="glyphicon glyphicon-remove" onclick="AnulujRez(@item.Roomid,@item.Bookingid)"></span>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

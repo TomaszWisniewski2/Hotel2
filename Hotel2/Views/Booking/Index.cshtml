@@ -1,0 +1,373 @@
+﻿@model Hotel2.VievModel.BookingViewModel
+@{
+    ViewBag.Title = "Index";
+}
+ 
+<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        LoadRezDetails2();
+        LoadWolnyDetails();
+        LoadRoomZajęty();
+        $("#btnSave").click(function () {
+            if (!$("#costumerBooking").valid()) {
+                return;
+            }
+            AddCustomerBooking();
+        });
+        LoadRezDetails2();
+        LoadWolnyDetails();
+        LoadRoomZajęty();
+    });
+
+   
+
+    
+
+    function ResetBooking() {
+        $("#txtCustomerName").val('');
+        $("#txtCustomerAddres").val('');
+       // $("#txtBookingFrom").val();
+       // $("#txtBookingTo").val();
+        $("#ddAssignRoomid").val(1);
+        $("#txtNoOfMembers").val('');
+        $("#txtCustomerName").focus();
+    }
+
+    function AddCustomerBooking() {
+        var objBookingViewModel = {};
+        objBookingViewModel.CustomerName = $("#txtCustomerName").val();
+        objBookingViewModel.CustomerAddres = $("#txtCustomerAddres").val();
+        objBookingViewModel.BookingFrom = $("#txtBookingFrom").val();
+        objBookingViewModel.BookingTo = $("#txtBookingTo").val();
+        objBookingViewModel.AssignRoomid = $("#ddAssignRoomid").val();
+        objBookingViewModel.NoOfMembers = $("#txtNoOfMembers").val();
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            //data: { roomid: roomid },
+            url: '/Booking/Index',
+            data: JSON.stringify(objBookingViewModel),
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    ResetBooking();
+                    
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty()
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    function LoadRezDetails2() {
+        
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Booking/GetAllRooms2',
+            success: function (data) {
+                $("#LoadRezDetails").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+    function LoadWolnyDetails() {
+        
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Booking/GetAllRoomsWolny',
+            success: function (data) {
+                $("#divLoadRoomWolny").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+
+    function LoadRoomZajęty() {
+
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Booking/GetRoomZajęty',
+            success: function (data) {
+                $("#divLoadRoomZajęty").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+    function ZwróćPokój(roomid, bookingid) {//zmian z active true na false
+        var result = confirm("Czy chcesz zwrócić pokój?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Booking/ZwróćPokój',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { bookingid: bookingid },
+            url: '/Booking/Delete',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function ZajmijPokój(roomid) {//zmian z active true na false
+        var result = confirm("Czy chcesz potwierdzić rezerwacje?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Booking/ZajmijPokój',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function Zapłać(bookingid) {//zmian z active true na false
+        var result = confirm("Czy chcesz zapłacić?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { bookingid: bookingid },
+            url: '/Booking/Zapłać',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function AnulujRez(roomid, bookingid) {//zmian z active true na false
+        var result = confirm("Czy chcesz anulować rezerwacje?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Booking/AnulujRez',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { bookingid: bookingid },
+            url: '/Booking/Delete',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+
+                    LoadRezDetails2();
+                    LoadWolnyDetails();
+                    LoadRoomZajęty();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    
+</script>
+
+
+
+<div style="margin-top: 20px">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#divNewBooking" >New Booking</button>
+
+    @using (Html.BeginForm("U", "Booking", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {@Html.Label("Plik JSON")
+    <input id="filejson" type="file" class="form-control" name="filejson" />
+    <input type="submit" value="save" />
+     }
+
+</div>
+
+
+<div id="divNewBooking" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: rgba(128,128,128,0.9);">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">New Booking</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="costumerBooking">
+                    <div class="container">
+
+                        <div class="row">
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.CustomerName, new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control", @id = "txtCustomerName" })
+                                @Html.ValidationMessageFor(model => model.CustomerName, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.CustomerAddres, new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.CustomerAddres, new { @class = "form-control", @id = "txtCustomerAddres" })
+                                @Html.ValidationMessageFor(model => model.CustomerAddres, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.BookingFrom, new { @class = "control-label" })<br>
+                                @Html.EditorFor(model => model.BookingFrom, new {htmlAttributes = new {  Value = Model.BookingFrom.ToString("dd-MMM-yyyy"), @class = "form-control datepicker", @id = "txtBookingFrom" } })
+                                @*@Html.EditorFor(model => model.BookingFrom, new { @class = "form-control", @id = "txtBookingFrom" })*@
+                                @Html.ValidationMessageFor(model => model.BookingFrom, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.BookingTo, new { @class = "control-label" })<br>
+                                @Html.EditorFor(model => model.BookingTo, new { htmlAttributes = new {  Value = Model.BookingTo.ToString("dd-MMM-yyyy"), @class = "form-control datepicker", @id = "txtBookingTo" } })
+                                @*@Html.EditorFor(model => model.BookingTo, new { @class = "form-control", @id = "txtBookingTo" })*@
+                                @Html.ValidationMessageFor(model => model.BookingTo, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.AssignRoomid, new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.AssignRoomid, Model.ListOfRooms, new { @class = "form-control", @id = "ddAssignRoomid" })
+                                @Html.ValidationMessageFor(model => model.AssignRoomid, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group ">
+                                @Html.LabelFor(model => model.NoOfMembers, new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.NoOfMembers, new { @class = "form-control", @id = "txtNoOfMembers" })
+                                @Html.ValidationMessageFor(model => model.NoOfMembers, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btnSave" type="button" class="btn btn-success">save</button> &nbsp;
+                <button type="button" data-dismiss="modal" class="btn btn-danger">cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div style="margin-top: 20px"></div>
+<div id="divLoadRoomWolny">
+
+</div>
+
+<div id="LoadRezDetails">
+
+</div>
+
+<div id="divLoadRoomZajęty">
+
+</div>
+
+

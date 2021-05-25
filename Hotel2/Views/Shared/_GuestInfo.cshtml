@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomBookingViewModel>
+
+<head>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 10px;
+        }
+
+        td {
+            font-size: 15px;
+        }
+    </style>
+</head>
+<table style="width: 100%" >
+    <thead style="background-color: powderblue;">
+        <tr>
+            
+            <th>
+                Imie
+            </th>
+            <th>
+                Nazwisko
+            </th>
+            <th>
+                Od
+            </th>
+            <th>
+                Do
+            </th>
+            <th>
+                Cena 
+            </th>
+            <th>
+                Zapłacono
+            </th>
+            <th>
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (@item.RoomNumber == "0")
+            {
+            <tr>
+
+                
+                <td>
+                    @item.CustomerName
+                </td>
+                <td>
+                    @item.CustomerAddres
+                </td>
+                <td>
+                    @item.BookingFrom.ToString("dd-MMM-yyyy")
+                </td>
+                <td>
+                    @item.BookingTo.ToString("dd-MMM-yyyy")
+                </td>
+                <td>
+                    @item.TotalAmount
+                </td>
+                <td>
+                    @item.Zapłacone
+                </td>
+                @if (@item.Zapłacone == "Nie")
+                {
+                <td>
+                  <span id="btnAnuluj" class="glyphicon glyphicon-usd" onclick="Zapłać2(@item.Bookingid)"></span>
+                </td>
+                }
+            </tr>
+            }
+        }
+    </tbody>
+</table>

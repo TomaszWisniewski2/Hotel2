@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomDetailsViewModel>
+@* tabela dodanych pokoi - delete i edit *@
+<head>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 15px;
+        }
+
+        td {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<table style="width: 100%">
+    <thead style="background-color: powderblue;">
+
+        <tr>
+
+            <th>
+                Room Image
+            </th>
+            <th>
+                Room No.
+            </th>
+            
+            <th>
+                Booking Status
+            </th>
+            <th>
+                Room Type
+            </th>
+            <th>
+                Room Capacity
+            </th>
+            <th>
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+
+            if ((@item.BookingStatus == "Wolny")&&(item.RoomNumber != "0"))
+            {
+
+                <tr>
+
+                    <td>
+                        <img src="@Url.Content("~/RoomImages/" + item.RoomImage)" width="50" height="50" class="img-responsive" />
+                    </td>
+                    <td>
+                        @item.RoomNumber
+                    </td>
+                    
+                    <td>
+                        @item.BookingStatus
+                    </td>
+                    <td>
+                        @item.RoomType
+                    </td>
+                    <td>
+                        @item.RoomCapacity
+                    </td>
+                    <td>
+                        <span id="btnDelete" class="glyphicon glyphicon-wrench" onclick="Remont(@item.Roomid)"></span>
+
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>

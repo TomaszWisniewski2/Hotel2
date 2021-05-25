@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomRezerwacjeViewModel>
+@* tabela zajęty pokoj - zwruć zapłać *@
+<head>
+    <style>
+        table, th, td {
+            margin: 20px;
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 15px;
+        }
+
+        td {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<table style="width: 100% ">
+
+    <thead style="background-color: powderblue;">
+
+        <tr>
+
+
+            <th>
+                Room Nr
+            </th>
+            <th>
+                Imie
+            </th>
+            <th>
+                Nazwisko
+            </th>
+            <th>
+                Stan
+            </th>
+            <th>
+                Od
+            </th>
+            <th>
+                Do
+            </th>
+            <th>
+                Do zapłaty
+            </th>
+            <th>
+                Status zapłaty
+            </th>
+
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if ((@item.BookingStatus == "Zajęty") && (@item.BookingTo > DateTime.UtcNow))
+            {
+
+
+
+                <tr>
+
+
+                    <td>
+                        @item.RoomNumber
+                    </td>
+                    <td>
+                        @item.CustomerName
+                    </td>
+                    <td>
+                        @item.CustomerAddres
+                    </td>
+                    <td>
+                        @item.BookingStatus
+                    </td>
+                    <td>
+                        @item.BookingFrom.ToString("dd-MMM-yyyy")
+                    </td>
+                    <td>
+                        @item.BookingTo.ToString("dd-MMM-yyyy")
+                    </td>
+                    <td>
+                        @item.TotalAmount
+                    </td>
+                    <td>
+                        @item.Zapłacone
+                    </td>
+                    
+                    <td>
+
+                        <span id="btnAccept" class="glyphicon glyphicon-arrow-left" onclick="ZwróćPokój(@item.Roomid, @item.Bookingid)"></span>&nbsp;&nbsp;
+                        <span id="btnAnuluj" class="glyphicon glyphicon-usd" onclick="Zapłać(@item.Bookingid)"></span>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

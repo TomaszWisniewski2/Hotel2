@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomDetailsViewModel>
+@* tabela brudnych pokoi - sprzątaj *@
+<head>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 15px;
+        }
+
+        td {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<table style="width: 100%">
+    <thead style="background-color: powderblue;">
+
+        <tr>
+
+            <th>
+                Image
+            </th>
+            <th>
+                NR Pokoju
+
+            </th>
+            
+            <th>
+                Status
+            </th>
+            <th>
+                Typ
+            </th>
+          
+            <th>
+                Sprzątaj
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (@item.BookingStatus == "Brudny")
+            {
+
+
+            <tr>
+
+                <td>
+                    <img src="@Url.Content("~/RoomImages/" + item.RoomImage)" width="50" height="50" class="img-responsive" />
+                </td>
+                <td>
+                    @item.RoomNumber
+                </td>
+                
+                <td>
+                    @item.BookingStatus
+                </td>
+                <td>
+                    @item.RoomType
+                </td>
+                
+                <td>
+                    <span id="btnDelete" class="glyphicon glyphicon-ok" onclick="SprzątajPokój(@item.Roomid)"></span>
+                    
+                </td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>

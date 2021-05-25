@@ -1,0 +1,26 @@
+[
+  {
+
+    "CustomerName": "Maja",
+    "CustomerAddres": "Pszczó³ka",
+    "BookingFrom": "2021-05-25",
+    "BookingTo": "2021-05-26",
+    "AssignRoomid": 1,
+    "NoOfMembers": 3,
+    "TotalAmount": 500.00,
+    "Paymentid": 1
+
+
+  },
+  {
+
+    "CustomerName": "Gucio",
+    "CustomerAddres": "Pszczó³ka",
+    "BookingFrom": "2021-05-25",
+    "BookingTo": "2021-05-26",
+    "AssignRoomid": 10,
+    "NoOfMembers": 3,
+    "TotalAmount": 500.00,
+    "Paymentid": 1
+  }
+]

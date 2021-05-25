@@ -1,0 +1,375 @@
+﻿@model Hotel2.VievModel.RoomVievModel
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+<script>
+    //-------------------------------------------------------------------------------
+    function DisplayImage(result) {
+        if (result.files && result.files[0]) {
+            var fileReader = new FileReader;
+            fileReader.onload = function (e) {
+                $("#imgRoom").attr('src', e.target.result);
+            }
+            fileReader.readAsDataURL(result.files[0]);
+        }
+    }
+    //-------------------------------------------------------------------------------
+    $(document).ready(function () {
+        LoadRoomDetails();
+        //LoadRoomDetails2();
+        //LoadGuestInfo();
+        LoadRoomWolnyRemont();
+        LoadRoomRemont();
+        $("#txtRoomid").val("0");
+        $("#btnSave").click(function () {
+            if (!$("#formRoom").valid()) {
+                return;
+            }
+            SaveRoomData();
+        });
+        LoadRoomDetails();
+       // LoadRoomDetails2();
+       // LoadGuestInfo();
+        LoadRoomWolnyRemont();
+        LoadRoomRemont();
+    });
+    //-------------------------------------------------------------------------------
+    function EditRoom(roomid) {
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Room/EditRoomDetails',
+            success: function (data) {
+                $("#txtRoomNumber").val(data.RoomNumber);
+                $("#txtRoomPrice").val(data.RoomPrice);
+                //$("#ddBookingStatus").val(data.BookingStatusid);
+                $("#ddRoomType").val(data.RoomTypeid);
+                $("#txtRoomCapacity").val(data.RoomCapacity);
+                $("#txtRoomDescription").val(data.RoomDescription);
+                $("#imgRoom").attr('src', "../RoomImages/"+ data.RoomImage);
+                $("#divAddRoom").modal({ show: true });
+                $("#txtRoomid").val(data.Roomid);
+                $("#btnSave").text("Update");
+                
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function DeleteRoom(roomid) {//zmian z active true na false
+        var result= confirm("Czy chcesz usunąc pokój?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Room/DeleteRoomDetails',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    LoadRoomDetails();
+                   // LoadRoomDetails2();
+                   // LoadGuestInfo();
+                    LoadRoomWolnyRemont();
+                    LoadRoomRemont();
+                }
+                
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function Remont(roomid) {//zmian z active true na false
+        var result = confirm("Czy chcesz wyremontować pokój?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Room/Remont',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    LoadRoomDetails();
+                    // LoadRoomDetails2();
+                    // LoadGuestInfo();
+                    LoadRoomWolnyRemont();
+                    LoadRoomRemont();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function KoniecRemontu(roomid) {//zmian z active true na false
+        var result = confirm("Czy chcesz zakończyć remont?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'Get',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomid: roomid },
+            url: '/Room/KoniecRemontu',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    LoadRoomDetails();
+                    // LoadRoomDetails2();
+                    // LoadGuestInfo();
+                    LoadRoomWolnyRemont();
+                    LoadRoomRemont();
+                }
+
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function SaveRoomData() {
+        var formData = new FormData;
+        formData.append("Roomid", $("#txtRoomid").val());
+        formData.append("RoomNumber", $("#txtRoomNumber").val());
+        formData.append("RoomPrice", $("#txtRoomPrice").val());
+        //formData.append("BookingStatusid", $("#ddBookingStatus").val());
+        formData.append("RoomTypeid", $("#ddRoomType").val());
+        formData.append("RoomCapacity", $("#txtRoomCapacity").val());
+        formData.append("RoomDescription", $("#txtRoomDescription").val());
+        formData.append("Image", $("#UploadImage").get(0).files[0]);
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    ResetRoomInformation();
+                    LoadRoomDetails();
+                    //LoadRoomDetails2();
+                    //LoadGuestInfo();
+                    LoadRoomWolnyRemont();
+                    LoadRoomRemont();
+                }
+            },
+            error: function () {
+                alert('error');
+            }
+
+        });
+    }
+    //-------------------------------------------------------------------------------
+    function ResetRoomInformation() {
+        $("#txtRoomNumber").val('');
+        $("#txtRoomPrice").val('');
+        //$("#ddBookingStatus").val(1);
+        $("#ddRoomType").val(1);
+        $("#txtRoomCapacity").val('');
+        $("#txtRoomDescription").val('');
+        $("#UploadImage").val('');
+        $("#txtRoomNumber").focus();
+        $("#imgRoom").removeAttr('src');
+        $("#txtRoomid").val(0);
+        $("#btnSave").val("Save");
+    }
+    //-------------------------------------------------------------------------------
+    //function LoadGuestInfo() {
+    //    $.ajax({
+    //        async: true,
+    //        type: 'GET',
+    //        dataType: 'HTML',
+    //        contentType: false,
+    //        processType: false,
+    //        url: '/Room/GetGuestInfo',
+    //        success: function (data) {
+    //            $("#divRoomWolnyRemont").html(data);
+
+    //        },
+    //        error: function () {
+    //            alert('error');
+    //        }
+    //    });
+    //}
+    function LoadRoomDetails() {
+        
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Room/GetAllRooms',
+            success: function (data) {
+                $("#divLoadRoomDetails").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+    //-------------------------------------------------------------------------------
+    //function LoadRoomDetails2() {
+    //    //$("#divLoadRoomDetails")
+    //    $.ajax({
+    //        async: true,
+    //        data: 'Get',
+    //        dataType: 'HTML',
+    //        contentType: false,
+    //        processData: false,
+    //        url: '/Room/GetAllRooms2',
+    //        success: function (data) {
+    //            $("#divLoadRoomDetails2").html(data);
+    //        },
+    //        error: function () {
+    //            alert('error');
+    //        }
+    //    });
+
+    //}
+    //-------------------------------------------------------------------------------
+
+    function LoadRoomWolnyRemont() {
+        //$("#divLoadRoomDetails")
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Room/GetRoomWolny',
+            success: function (data) {
+                $("#divRoomWolnyRemont").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+
+    function LoadRoomRemont() {
+        //$("#divLoadRoomDetails")
+        $.ajax({
+            async: true,
+            data: 'Get',
+            dataType: 'HTML',
+            contentType: false,
+            processData: false,
+            url: '/Room/GetRoomRemont',
+            success: function (data) {
+                $("#divRoomRemont").html(data);
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+
+    }
+</script>
+
+<div class="navbar-collapse collapse" >
+    <ul class="nav navbar-nav">
+        <li>@Html.ActionLink("Historia", "Index", "Historia")</li>
+    </ul>
+</div>
+
+<div style="margin-top: 20px">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#divAddRoom" >Add room</button>
+    
+</div>
+
+<div id="divAddRoom" class="modal fade" role="dialog" style="position:fixed;left:0px;top:0px;width:100%; height:100%; background-color: transparent; ">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: rgba(125,128,128,0.9);">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Room</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="formRoom">
+                    <div class="container">
+                        @Html.HiddenFor(model => model.Roomid, new { @id = "txtRoomid" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomNumber) <br>
+                            @Html.TextBoxFor(model => model.RoomNumber, new { @class = "from-control", id = "txtRoomNumber" })
+                            @Html.ValidationMessageFor(model => model.RoomNumber, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomPrice)<br>
+                            @Html.TextBoxFor(model => model.RoomPrice, new { @class = "from-control", id = "txtRoomPrice" })
+                            @Html.ValidationMessageFor(model => model.RoomPrice, null, new { @class = "text-danger" })
+                        </div>
+                        <!--<div class="form-group">-->
+                            @*@Html.LabelFor(model => model.BookingStatusid)<br>
+                            @Html.DropDownListFor(model => model.BookingStatusid, Model.ListOfBookingStatus, new { @class = "from-control", id = "ddBookingStatus" })
+                            @Html.ValidationMessageFor(model => model.BookingStatusid, null, new { @class = "text-danger" })*@
+                        <!--</div>-->
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomTypeid)<br>
+                            @Html.DropDownListFor(model => model.RoomTypeid, Model.ListOfRoomType, new { @class = "from-control", id = "ddRoomType" })
+                            @Html.ValidationMessageFor(model => model.RoomTypeid, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomCapacity)<br>
+                            @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "from-control", id = "txtRoomCapacity" })
+                            @Html.ValidationMessageFor(model => model.RoomCapacity, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomDescription)<br>
+                            @Html.TextBoxFor(model => model.RoomDescription, new { @class = "from-control", id = "txtRoomDescription" })
+                            @Html.ValidationMessageFor(model => model.RoomDescription, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RoomImage)<br>
+                            <input id="UploadImage" type="file" class="form-control" name="roomImage" title="Load Image" onchange="DisplayImage(this)" />
+                            <img id="imgRoom" height="100" width="100" style="border: solid" />
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btnSave" type="button" class="btn btn-success">save</button> &nbsp;
+                <button type="button" data-dismiss="modal" class="btn btn-danger">cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div style="margin-top: 20px">Lista Pokoi</div>
+
+<div id="divLoadRoomDetails"></div>
+
+<div style="margin-top: 20px">Lista Wolnych Pokoi</div>
+<div id="divRoomWolnyRemont"></div>
+
+<div style="margin-top: 20px">Lista Pokoi w remoncie</div>
+<div id="divRoomRemont"></div>
+

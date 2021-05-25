@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Hotel2.VievModel.RoomDetailsViewModel>
+@* tabela dodanych pokoi - delete i edit *@
+<head>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 15px;
+        }
+        /*td {
+            font-size: 20px;
+        }*/
+
+    
+    </style>
+</head>
+<table style="width: 100%" id="tab" >
+    <thead style="background-color: powderblue;" >
+
+        <tr>
+
+            <th>
+                Room Image
+            </th>
+            <th>
+                NR Pokoju
+                
+            </th>
+            <th>
+                Room Price
+            </th>
+            <th>
+                Booking Status
+            </th>
+            <th>
+                Room Type
+            </th>
+            <th>
+                Room Capacity
+            </th>
+            <th>
+                Room Description
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            if (@item.RoomNumber != "0")
+            {
+
+
+        <tr>
+
+            <td id="img">
+                <img src="@Url.Content("~/RoomImages/" + item.RoomImage)" height="100" width="100"  class="img-responsive" />
+            </td>
+            <td id="td">
+                @item.RoomNumber
+            </td>
+            <td id="td">
+                @item.RoomPrice
+            </td>
+            <td id="td">
+                @item.BookingStatus
+            </td>
+            <td id="td">
+                @item.RoomType
+            </td>
+            <td id="td">
+                @item.RoomCapacity
+            </td>
+            <td id="td">
+                @item.RoomDescription
+            </td>
+            <td id="td">
+                <span id="btnDelete" class="glyphicon glyphicon-trash" onclick="DeleteRoom(@item.Roomid)"></span>&nbsp;&nbsp;
+                <span id="btnEdit" class="glyphicon glyphicon-pencil" onclick="EditRoom(@item.Roomid)"></span>
+            </td>
+        </tr>
+            }
+        }
+    </tbody>
+</table>
